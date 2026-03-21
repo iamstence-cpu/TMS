@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum TrainingStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum SessionStage {
+  MICROLEARNING
+  WORKFLOW
+  ROLEPLAY
+  REPORT
+}
+
+enum SessionStatus {
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Training {
+  id                 String            @id @default(cuid())
+  slug               String            @unique
+  title              String
+  category           String
+  description        String
+  targetRoles        String
+  learningObjectives String
+  difficulty         String
+  estimatedMinutes   Int
+  status             TrainingStatus    @default(PUBLISHED)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  microLesson        MicroLesson?
+  workflowScenario   WorkflowScenario?
+  roleplayScenario   RoleplayScenario?
+  sessions           TrainingSession[]
+}
+
+model MicroLesson {
+  id         String   @id @default(cuid())
+  trainingId String   @unique
+  intro      String
+  sections   Json
+  quizItems  Json
+  training   Training @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+}
+
+model WorkflowScenario {
+  id               String   @id @default(cuid())
+  trainingId       String   @unique
+  title            String
+  description      String
+  context          String
+  steps            Json
+  passingRules     Json
+  criticalMistakes Json
+  training         Training @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+}
+
+model RoleplayScenario {
+  id              String   @id @default(cuid())
+  trainingId      String   @unique
+  roleType        String
+  persona         String
+  openingMessage  String
+  objectives      Json
+  scoringRubric   Json
+  stopConditions  Json
+  escalationRules Json
+  training        Training @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+}
+
+model TrainingSession {
+  id                    String        @id @default(cuid())
+  trainingId            String
+  anonymousId           String?
+  currentStage          SessionStage  @default(MICROLEARNING)
+  status                SessionStatus @default(IN_PROGRESS)
+  startedAt             DateTime      @default(now())
+  completedAt           DateTime?
+  microlearningResult   Json?
+  workflowTrace         Json?
+  roleplayTranscript    Json?
+  roleplayRoundCount    Int           @default(0)
+  reportJson            Json?
+  training              Training      @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+}
