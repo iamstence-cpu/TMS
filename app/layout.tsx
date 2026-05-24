@@ -12,6 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/trainings">训练主题</Link>
               <Link href="/admin">管理端</Link>
               <Link href="/about/safety">安全边界</Link>
+              <Link href="/weather-alert">天气预警</Link>
             </div>
           </nav>
         </header>

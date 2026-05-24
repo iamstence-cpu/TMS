@@ -10,6 +10,7 @@ export default async function HomePage() {
         <h1 className="text-2xl font-bold">健康管理师岗位训练平台</h1>
         <p className="mt-2 text-sm text-slate-600">聚焦流程训练、沟通训练、风险识别、合规边界与过程留痕。仅用于教学与实训，不替代医疗诊疗。</p>
         <Link href="/trainings" className="btn mt-3 inline-block">进入训练主题</Link>
+        <Link href="/weather-alert" className="btn-secondary mt-3 ml-2 inline-block">体验天气预警 APP Demo</Link>
       </section>
       <section className="grid gap-3 md:grid-cols-2">{trainings.map((t) => <TrainingCard key={t.id} training={t} />)}</section>
     </main>
